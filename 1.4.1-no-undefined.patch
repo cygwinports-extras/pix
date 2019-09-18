@@ -1,0 +1,58 @@
+--- origsrc/pix-1.4.1/Makefile.am	2017-05-06 10:03:01.000000000 -0400
++++ src/pix-1.4.1/Makefile.am	2017-05-12 15:37:45.505910700 -0400
+@@ -1,4 +1,7 @@
+-SUBDIRS = m4 copy-n-paste data po pix extensions tests help
++SUBDIRS = m4 copy-n-paste data po pix extensions help
++if BUILD_TEST_SUITE
++SUBDIRS += tests
++endif
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+--- origsrc/pix-1.4.1/extensions/Makefile.am	2017-05-06 10:03:01.000000000 -0400
++++ src/pix-1.4.1/extensions/Makefile.am	2017-05-12 15:05:29.841875200 -0400
+@@ -49,9 +49,9 @@ SUBDIRS = 			\
+ 	file_viewer		\
+ 	gstreamer_utils		\
+ 	gstreamer_tools		\
+-	image_print		\
+ 	jpeg_utils		\
+ 	$(JPEG_TOOLS)		\
++	image_print		\
+ 	list_tools		\
+ 	map_view		\
+ 	oauth			\
+--- origsrc/pix-1.4.1/extensions/image_print/Makefile.am	2017-05-06 10:03:01.000000000 -0400
++++ src/pix-1.4.1/extensions/image_print/Makefile.am	2017-05-12 15:05:29.846875100 -0400
+@@ -20,7 +20,7 @@ libimage_print_la_SOURCES = 		\
+ 
+ libimage_print_la_CPPFLAGS = $(PIX_CFLAGS) -I$(top_srcdir) -I$(top_builddir)/pix 
+ libimage_print_la_LDFLAGS = $(EXTENSION_LIBTOOL_FLAGS)
+-libimage_print_la_LIBADD = $(PIX_LIBS) 
++libimage_print_la_LIBADD = $(PIX_LIBS) ../image_viewer/libimage_viewer.la
+ libimage_print_la_DEPENDENCIES = $(top_builddir)/pix/pix$(EXEEXT)
+ 
+ extensioninidir = $(extensiondir)
+--- origsrc/pix-1.4.1/extensions/image_viewer/Makefile.am	2017-05-06 10:03:01.000000000 -0400
++++ src/pix-1.4.1/extensions/image_viewer/Makefile.am	2017-05-12 15:05:58.957636700 -0400
+@@ -16,7 +16,7 @@ libimage_viewer_la_SOURCES = 		\
+ 
+ libimage_viewer_la_CFLAGS = $(PIX_CFLAGS) -I$(top_srcdir) -I$(top_builddir)/pix 
+ libimage_viewer_la_LDFLAGS = $(EXTENSION_LIBTOOL_FLAGS)
+-libimage_viewer_la_LIBADD = $(PIX_LIBS)
++libimage_viewer_la_LIBADD = $(PIX_LIBS) $(LIBWEBP_LIBS)
+ if ENABLE_JPEG_TOOLS
+ libimage_viewer_la_LIBADD += ../jpeg_utils/libjpeg_utils.la
+ endif
+--- origsrc/pix-1.4.1/pix/Makefile.am	2017-05-06 10:03:01.000000000 -0400
++++ src/pix-1.4.1/pix/Makefile.am	2017-05-12 15:04:28.399634200 -0400
+@@ -405,7 +405,8 @@ dist-hook:
+ 
+ if PLATFORM_WIN32
+ install-exec-hook:
+-	$(INSTALL_DATA) .libs/libpix.a $(DESTDIR)$(pkglibdir)/libpix.a
++	$(MKDIR_P) $(DESTDIR)$(pkglibdir)
++	$(INSTALL_DATA) .libs/libpix.a $(DESTDIR)$(pkglibdir)/libpix.dll.a
+ endif
+ 
+ -include $(top_srcdir)/git.mk

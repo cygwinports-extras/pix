@@ -1,0 +1,45 @@
+inherit gnome2
+
+NAME="pix"
+VERSION=2.2.1
+RELEASE=1
+CATEGORY="Graphics"
+SUMMARY="Cross-desktop image organizer"
+DESCRIPTION="Pix is a cross-desktop image viewer and browser utility."
+HOMEPAGE="https://github.com/linuxmint/pix"
+SRC_URI="${HOMEPAGE}/archive/${VERSION}/pix-${VERSION}.tar.gz"
+PATCH_URI="1.4.1-no-undefined.patch"
+
+PKG_NAMES="pix pix-devel"
+pix_CONTENTS="
+	etc/
+	usr/bin/pix.exe
+	usr/lib/pix/extensions/
+	usr/share/applications/pix-import.desktop
+	usr/share/applications/pix.desktop
+	usr/share/doc/pix/
+	usr/share/glib-2.0/schemas/org.x.pix.*
+	usr/share/help/*/pix/
+	usr/share/icons/hicolor/*/apps/pix.*
+	usr/share/locale/*/LC_MESSAGES/pix.mo
+	usr/share/man/man1/pix.1*
+	usr/share/pix/
+"
+pix_devel_SUMMARY="${SUMMARY} (plugin development)"
+pix_devel_CONTENTS="
+	usr/include/pix-*
+	usr/lib/pix/libpix.dll.a
+	usr/lib/pkgconfig/pix-*.pc
+	usr/share/aclocal/pix.m4
+"
+
+DEPS_PATH="/usr/lib/pix/extensions"
+
+DIFF_EXCLUDES="pix-marshal.*"
+
+CYGCONF_ARGS="
+	--disable-libbrasero
+	--enable-libopenraw
+	--disable-webkit2
+	--with-smclient=xsmp
+"
